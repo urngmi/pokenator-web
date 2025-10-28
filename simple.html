@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Pokénator - The Pokémon Mind Reader</title>
+    <link rel="stylesheet" href="styles.css?v=2.0">
+    <link rel="stylesheet" href="assets/maps/map-slideshow.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@400;700;900&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Pokémon Fire Red Map Slideshow Background -->
+    <div class="map-slideshow-background">
+        <div class="map-slideshow"></div>
+    </div>
+
+    <!-- Background Effects -->
+    <div class="background-effects">
+        <div class="particle" style="--delay: 0s; --duration: 6s;"></div>
+        <div class="particle" style="--delay: 1s; --duration: 8s;"></div>
+        <div class="particle" style="--delay: 2s; --duration: 7s;"></div>
+        <div class="particle" style="--delay: 3s; --duration: 9s;"></div>
+        <div class="particle" style="--delay: 4s; --duration: 5s;"></div>
+    </div>
+    <div class="game-container">
+        <header class="game-header">
+            <div class="logo-container">
+                <img src="assets/logo-v2.png" alt="Pokénator Logo" class="logo">
+            </div>
+            <div class="game-stats">
+                <div class="stat">
+                    <span class="stat-label">Question</span>
+                    <span class="stat-value" id="current-question-num">1</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Engine</span>
+                    <span class="stat-value">V4.0</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="game-main">
+            <!-- Welcome Screen -->
+            <div id="welcome-screen" class="game-screen" style="display: block;">
+                <div class="welcome-content pokemon-dialog">
+                    <h2>Think of a Pokémon...</h2>
+                    <p>I'll ask you some questions and try to guess which Pokémon you're thinking of!</p>
+                    <p style="color: var(--gba-blue); font-size: 10px; margin-top: 16px; text-align: center;">
+                        ⚡ Enhanced with CLI V3.1 Features - Entropy-based AI ⚡
+                    </p>
+                    <div class="pokemon-preview">
+                        <div class="mystery-ball">
+                            <div class="pokeball">
+                                <div class="pokeball-top"></div>
+                                <div class="pokeball-middle"></div>
+                                <div class="pokeball-bottom"></div>
+                                <div class="pokeball-center"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="start-game" class="primary-button">
+                        <span>Loading...</span>
+                        <div class="button-glow"></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Question Screen -->
+            <div id="question-screen" class="game-screen" style="display: none;">
+                <div class="question-content pokemon-dialog">
+                    <div class="question-number">
+                        Question <span id="current-question-num">1</span>
+                    </div>
+                    
+                    <div class="question-container">
+                        <h2 id="question-text" class="question-text">
+                            Is it a Fire-type Pokémon? 🔥
+                        </h2>
+                    </div>
+
+                    <div class="answer-options">
+                        <button class="answer-button confident-yes" data-confidence="1.0">
+                            <span class="answer-text">Yes</span>
+                            <span class="answer-sub">Definitely</span>
+                        </button>
+                        
+                        <button class="answer-button probably-yes" data-confidence="0.75">
+                            <span class="answer-text">Probably Yes</span>
+                            <span class="answer-sub">I think so</span>
+                        </button>
+                        
+                        <button class="answer-button dont-know" data-confidence="0.5">
+                            <span class="answer-text">I Don't Know</span>
+                            <span class="answer-sub">Not sure</span>
+                        </button>
+                        
+                        <button class="answer-button probably-no" data-confidence="0.25">
+                            <span class="answer-text">Probably No</span>
+                            <span class="answer-sub">I doubt it</span>
+                        </button>
+                        
+                        <button class="answer-button confident-no" data-confidence="0.0">
+                            <span class="answer-text">No</span>
+                            <span class="answer-sub">Definitely not</span>
+                        </button>
+                    </div>
+                    
+                    <div class="keyboard-hint">
+                        <p>Use ↑↓ arrow keys to select, Enter to confirm</p>
+                    </div>
+
+                    <div class="progress-indicator">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thinking Screen -->
+            <div id="thinking-screen" class="game-screen" style="display: none;">
+                <div class="thinking-content pokemon-dialog">
+                    <div class="thinking-animation">
+                        <div class="brain-icon">🧠</div>
+                        <div class="thinking-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    <h2>Let me think...</h2>
+                    <p>Processing your answer...</p>
+                </div>
+            </div>
+
+            <!-- Results Screen -->
+            <div id="results-screen" class="game-screen" style="display: none;">
+                <div class="results-content pokemon-dialog">
+                    <div class="result-header">
+                        <h2 id="result-title">Who's That Pokémon?</h2>
+                    </div>
+                    
+                    <div class="pokemon-reveal-container">
+                        <!-- Silhouette Phase -->
+                        <div class="pokemon-silhouette-stage" id="silhouette-stage">
+                            <div class="pokemon-sprite-container">
+                                <img id="pokemon-silhouette" class="pokemon-sprite silhouette" src="" alt="Pokemon Silhouette">
+                            </div>
+                        </div>
+                        
+                        <!-- Reveal Phase -->
+                        <div class="pokemon-reveal-stage" id="reveal-stage" style="display: none;">
+                            <div class="reveal-animation">
+                                <div class="flash-effect"></div>
+                                <div class="pokemon-sprite-container">
+                                    <img id="pokemon-sprite" class="pokemon-sprite revealed" src="" alt="Pokemon">
+                                </div>
+                                <div class="pokemon-info">
+                                    <div class="pokemon-name" id="guessed-pokemon">Pikachu</div>
+                                    <div class="confidence-display">
+                                        <span>Confidence: </span>
+                                        <span id="final-confidence">85%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="result-actions" id="result-actions" style="display: none;">
+                        <button id="correct-guess" class="result-button correct">
+                            Correct!
+                        </button>
+                        <button id="wrong-guess" class="result-button wrong">
+                            Wrong
+                        </button>
+                        <button id="play-again" class="primary-button">
+                            Play Again
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Enhanced Pokénator Engine -->
+    <script>
+        // Force clear any cached scripts and load fresh
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister();
+                }
+            });
+        }
+        
+        // Load script with timestamp to prevent caching
+        const script = document.createElement('script');
+        script.src = 'js/enhanced-game-v4.js?v=3.0&t=' + Date.now();
+        document.head.appendChild(script);
+    </script>
+</body>
+</html>

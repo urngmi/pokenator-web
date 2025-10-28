@@ -1,0 +1,1226 @@
+/* ===== CSS RESET & BASE ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* Pokemon Fire Red/Leaf Green Authentic Colors */
+    --gba-bg: #e8f0e8;
+    --gba-dialog-bg: #f8f8f0;
+    --gba-dialog-border-dark: #404040;
+    --gba-dialog-border-light: #ffffff;
+    --gba-text-primary: #202020;
+    --gba-text-black: #000000;
+    --gba-blue: #0060a8;
+    --gba-red: #f83030;
+    --gba-yellow: #f8d030;
+    --gba-green: #18c038;
+    
+    /* Authentic GBA shadows and borders */
+    --gba-shadow: 2px 2px 0px #404040;
+    --gba-inset-light: inset 1px 1px 0px #ffffff;
+    --gba-inset-dark: inset -1px -1px 0px #a0a0a0;
+    
+    /* Fire Red font - authentic pixelated */
+    --font-gba: 'Press Start 2P', monospace;
+    --font-fallback: 'Courier New', monospace;
+    
+    /* Spacing for pixel-perfect layout */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 12px;
+    --space-lg: 16px;
+    --space-xl: 24px;
+}
+
+body {
+    font-family: var(--font-gba);
+    background: var(--gba-bg);
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: scroll; /* Always show scrollbar to prevent flicker */
+    color: var(--gba-text-primary);
+    line-height: 1.2;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    font-size: 12px; /* Base pixel size for authentic feel */
+}
+
+/* Remove the TV scan lines - we want clean Game Boy style */
+
+/* ===== BACKGROUND EFFECTS ===== */
+.background-effects {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: var(--text-white);
+    opacity: 0.6;
+    animation: float var(--duration, 8s) infinite ease-in-out;
+    animation-delay: var(--delay, 0s);
+}
+
+.particle:nth-child(1) { top: 10%; left: 15%; }
+.particle:nth-child(2) { top: 70%; left: 85%; }
+.particle:nth-child(3) { top: 85%; left: 30%; }
+.particle:nth-child(4) { top: 30%; left: 70%; }
+.particle:nth-child(5) { top: 15%; left: 90%; }
+
+@keyframes float {
+    0%, 100% { 
+        transform: translateY(0px); 
+        opacity: 0.3; 
+    }
+    50% { 
+        transform: translateY(-15px); 
+        opacity: 0.8; 
+    }
+}
+
+/* ===== LAYOUT ===== */
+.game-container {
+    max-width: 1200px; /* Back to reasonable container size */
+    margin: 0 auto;
+    padding: var(--space-lg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center all content */
+}
+
+/* ===== GBA-STYLE HEADER ===== */
+.game-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-lg);
+    background: transparent; /* No background */
+    border: none; /* No border */
+    padding: var(--space-md);
+    box-shadow: none; /* No shadow */
+}
+
+.logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo {
+    width: 500px; /* Large but reasonable size */
+    height: 150px; /* Proper aspect ratio */
+    object-fit: contain;
+    image-rendering: pixelated;
+    filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.4)); /* Nice shadow */
+}
+
+.title {
+    display: none; /* Hide the title text completely */
+}
+
+.subtitle {
+    display: none; /* Hide "Mind Reader" text */
+}
+
+.game-stats {
+    display: none; /* Hide question number and confidence */
+}
+
+.stat {
+    text-align: center;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--gba-blue);
+    color: white;
+    border: 1px solid var(--gba-dialog-border-dark);
+    border-top-color: var(--gba-dialog-border-light);
+    border-left-color: var(--gba-dialog-border-light);
+}
+
+.stat-label {
+    display: block;
+    font-size: 8px;
+    margin-bottom: 2px;
+    font-family: var(--font-gba);
+}
+
+.stat-value {
+    display: block;
+    font-size: 12px;
+    font-family: var(--font-gba);
+}
+
+/* ===== GAME SCREENS ===== */
+.game-main {
+    flex: 1;
+    position: relative;
+    width: 100%;
+}
+
+.game-screen {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.game-screen.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ===== AUTHENTIC GBA DIALOG BOX ===== */
+.pokemon-dialog {
+    background: #ffffff; /* Pure white background for maximum contrast */
+    border: 3px solid var(--gba-dialog-border-dark);
+    border-top-color: var(--gba-dialog-border-light);
+    border-left-color: var(--gba-dialog-border-light);
+    margin: var(--space-lg);
+    padding: var(--space-lg);
+    position: relative;
+    font-family: var(--font-gba);
+    color: #000000; /* Pure black text */
+    box-shadow: var(--gba-inset-light), var(--gba-inset-dark);
+}
+
+.pokemon-dialog::before {
+    content: '';
+    position: absolute;
+    bottom: var(--space-lg);
+    right: var(--space-lg);
+    width: 0;
+    height: 0;
+    border-left: 8px solid var(--gba-red);
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    animation: blink 1s infinite;
+}
+
+.pokemon-dialog p {
+    font-family: var(--font-gba);
+    font-size: 14px; /* Slightly larger for better readability */
+    color: #000000; /* Pure black for maximum contrast */
+    margin: var(--space-md) 0;
+    line-height: 1.6;
+    text-align: left;
+    font-weight: bold; /* Make text bolder */
+}
+
+.question-content {
+    background: #ffffff; /* Pure white background for maximum contrast */
+    border: 3px solid var(--gba-dialog-border-dark);
+    border-top-color: var(--gba-dialog-border-light);
+    border-left-color: var(--gba-dialog-border-light);
+    margin: var(--space-lg) auto; /* Center horizontally */
+    padding: var(--space-xl);
+    text-align: center; /* Center everything in question dialog */
+    box-shadow: var(--gba-inset-light), var(--gba-inset-dark);
+    width: 700px; /* Slightly wider for better readability */
+    max-width: 90vw; /* Responsive */
+}
+
+.question-text {
+    font-family: var(--font-gba), 'Courier New', monospace !important;
+    font-size: 16px !important; /* Readable size */
+    color: #000000 !important; /* Pure black text */
+    margin: var(--space-lg) 0 !important;
+    line-height: 1.6 !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    padding: var(--space-lg) !important;
+    background: #ffffff !important; /* Pure white background */
+    border: 2px solid var(--gba-dialog-border-dark) !important;
+    border-top-color: var(--gba-dialog-border-light) !important;
+    border-left-color: var(--gba-dialog-border-light) !important;
+    border-radius: 4px !important;
+    box-shadow: var(--gba-inset-light), var(--gba-inset-dark) !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+.question-number {
+    display: none; /* Hide question number */
+}
+
+/* ===== WELCOME SCREEN ===== */
+.welcome-content {
+    background: var(--gba-dialog-bg);
+    border: 2px solid var(--gba-dialog-border-dark);
+    border-top-color: var(--gba-dialog-border-light);
+    border-left-color: var(--gba-dialog-border-light);
+    margin: var(--space-lg) auto;
+    padding: var(--space-xl);
+    text-align: center;
+    box-shadow: var(--gba-inset-light), var(--gba-inset-dark);
+    width: 700px; /* Good size - not too big, not too small */
+    max-width: 90vw; /* Responsive */
+    position: relative;
+}
+
+.welcome-content h2 {
+    font-family: var(--font-gba);
+    font-size: 20px; /* Reasonable size */
+    margin-bottom: var(--space-lg);
+    color: var(--gba-text-black);
+    font-weight: normal;
+    letter-spacing: 2px;
+}
+
+.welcome-content p {
+    font-family: var(--font-gba);
+    font-size: 14px; /* Readable size */
+    color: var(--gba-text-black);
+    margin-bottom: var(--space-xl);
+    line-height: 1.6;
+}
+
+.pokemon-preview {
+    margin: var(--spacing-xl) 0;
+}
+
+.mystery-ball {
+    display: inline-block;
+    animation: float 3s ease-in-out infinite;
+}
+
+.pokeball {
+    width: 100px; /* Normal pokeball size */
+    height: 100px;
+    position: relative;
+    margin: 0 auto;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.pokeball:hover {
+    transform: scale(1.1) rotate(10deg);
+}
+
+.pokeball-top, .pokeball-bottom {
+    width: 100px; /* Match pokeball size */
+    height: 50px; /* Half of pokeball height */
+    border-radius: 50px 50px 0 0;
+    position: absolute;
+}
+
+.pokeball-top {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    top: 0;
+    box-shadow: inset 0 -5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.pokeball-bottom {
+    background: linear-gradient(45deg, #ffffff, #f1f2f6);
+    bottom: 0;
+    border-radius: 0 0 50px 50px; /* Match top radius */
+    box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.pokeball-middle {
+    width: 100px; /* Match pokeball width */
+    height: 8px;
+    background: #2c2c54;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+}
+
+.pokeball-center {
+    width: 25px;
+    height: 25px;
+    background: radial-gradient(circle, #ffffff 30%, #2c2c54 30%, #2c2c54 60%, #ffffff 60%);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== GBA-STYLE BUTTONS ===== */
+.primary-button, .secondary-button, .success-button, .warning-button {
+    padding: var(--space-md) var(--space-lg);
+    border: 2px solid var(--gba-dialog-border-dark);
+    border-top-color: var(--gba-dialog-border-light);
+    border-left-color: var(--gba-dialog-border-light);
+    font-size: 12px;
+    font-family: var(--font-gba);
+    cursor: pointer;
+    transition: all 0.1s ease;
+    text-transform: none;
+    letter-spacing: 1px;
+    background: var(--gba-dialog-bg);
+    color: var(--gba-text-black);
+    box-shadow: var(--gba-inset-light), var(--gba-inset-dark);
+}
+
+.primary-button {
+    background: var(--gba-blue);
+    color: white;
+}
+
+.secondary-button {
+    background: var(--gba-dialog-bg);
+    color: var(--gba-text-black);
+}
+
+.success-button {
+    background: var(--gba-green);
+    color: white;
+}
+
+.warning-button {
+    background: var(--gba-yellow);
+    color: var(--gba-text-black);
+}
+
+.primary-button:hover, .secondary-button:hover, .success-button:hover, .warning-button:hover {
+    border-top-color: var(--gba-dialog-border-dark);
+    border-left-color: var(--gba-dialog-border-dark);
+    border-bottom-color: var(--gba-dialog-border-light);
+    border-right-color: var(--gba-dialog-border-light);
+}
+
+.primary-button:active, .secondary-button:active, .success-button:active, .warning-button:active {
+    box-shadow: inset 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.secondary-button:hover, .warning-button:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* ===== QUESTION SCREEN ===== */
+.question-content {
+    background: #ffffff; /* Solid white background */
+    border: 3px solid var(--gba-dialog-border-dark);
+    border-top-color: var(--gba-dialog-border-light);
+    border-left-color: var(--gba-dialog-border-light);
+    margin: var(--space-lg) auto;
+    padding: var(--space-xl);
+    text-align: center;
+    box-shadow: var(--gba-inset-light), var(--gba-inset-dark);
+    width: 700px;
+    max-width: 90vw;
+}
+
+.question-number {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.question-container {
+    margin: var(--spacing-xl) 0;
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.question-text {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.4;
+    background: linear-gradient(45deg, #fff, #f8f9fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    max-width: 600px;
+}
+
+/* ===== ANSWER OPTIONS ===== */
+.answer-options {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin: var(--space-xl) auto;
+    max-width: 350px;
+    width: 100%;
+    align-items: center;
+    padding-left: 30px; /* Add space for selection arrow */
+    position: relative;
+}
+
+/* Selection indicator for keyboard navigation */
+.answer-button {
+    background: #f8f8f0; /* GBA dialog background */
+    border: 3px solid;
+    border-top-color: #ffffff;
+    border-left-color: #ffffff;
+    border-right-color: #808080;
+    border-bottom-color: #808080;
+    padding: var(--space-md);
+    cursor: pointer;
+    transition: all 0.1s ease;
+    font-family: var(--font-gba);
+    color: var(--gba-text-black);
+    text-align: center;
+    font-size: 10px;
+    min-height: 60px;
+    width: 100%;
+    max-width: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.3); /* 3D depth shadow */
+    position: relative;
+    margin: 2px 0;
+    font-weight: bold;
+}
+
+/* 3D pressed effect for selected button */
+.answer-button.selected {
+    background: #e8e8e0 !important; /* Slightly darker when selected */
+    border-top-color: #808080 !important;
+    border-left-color: #808080 !important;
+    border-right-color: #ffffff !important;
+    border-bottom-color: #ffffff !important;
+    box-shadow: inset 2px 2px 4px rgba(0,0,0,0.2) !important; /* Inset shadow for pressed look */
+    transform: translate(1px, 1px); /* Slight movement for press effect */
+}
+
+/* Selection arrow indicator */
+.answer-button.selected::before {
+    content: '>';
+    position: absolute;
+    left: -25px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gba-text-black);
+    font-size: 16px;
+    font-weight: bold;
+    animation: pulse-arrow 1s ease-in-out infinite;
+    z-index: 10;
+}
+
+/* Hover effect */
+.answer-button:hover:not(.selected) {
+    background: #ffffff;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.4); /* Slightly stronger shadow on hover */
+}
+
+/* Click/active effect */
+.answer-button:active {
+    background: #e0e0d8;
+    border-top-color: #808080;
+    border-left-color: #808080;
+    border-right-color: #ffffff;
+    border-bottom-color: #ffffff;
+    box-shadow: inset 1px 1px 2px rgba(0,0,0,0.3);
+    transform: translate(1px, 1px);
+}
+
+.answer-text {
+    font-size: 11px;
+    margin-bottom: 2px;
+    font-weight: bold;
+}
+
+.answer-sub {
+    font-size: 8px;
+    color: #666;
+    font-weight: normal;
+}
+
+/* All answer buttons use consistent 3D GBA styling - no special colors needed */
+
+/* ===== THINKING SCREEN ===== */
+.thinking-content {
+    text-align: center;
+    background: var(--gba-dialog-bg);
+    border: 2px solid var(--gba-dialog-border-dark);
+    border-top-color: var(--gba-dialog-border-light);
+    border-left-color: var(--gba-dialog-border-light);
+    margin: var(--space-lg);
+    padding: var(--space-xl);
+    box-shadow: var(--gba-inset-light), var(--gba-inset-dark);
+}
+
+.thinking-animation {
+    margin: var(--space-xl) 0;
+}
+
+.brain-icon {
+    font-size: 32px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.thinking-dots {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+}
+
+.thinking-dots span {
+    width: 8px;
+    height: 8px;
+    background: var(--gba-text-black);
+    border-radius: 50%;
+    animation: bounce 1.4s ease-in-out infinite both;
+}
+
+.thinking-dots span:nth-child(1) { animation-delay: -0.32s; }
+.thinking-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounce {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+}
+
+.thinking-content h2 {
+    font-family: var(--font-gba);
+    font-size: 16px;
+    color: var(--gba-text-black);
+    margin: var(--space-lg) 0 var(--space-md) 0;
+}
+
+.thinking-content p {
+    font-family: var(--font-gba);
+    font-size: 12px;
+    color: var(--gba-text-black);
+    margin-bottom: var(--space-lg);
+}
+
+/* ===== PROGRESS INDICATOR ===== */
+.progress-indicator {
+    margin-top: var(--space-xl);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--gba-dialog-border-dark);
+    border: 1px solid var(--gba-dialog-border-dark);
+    overflow: hidden;
+    margin-bottom: var(--space-sm);
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--gba-green);
+    transition: width 0.5s ease;
+    width: 0%;
+}
+
+.progress-text {
+    font-size: 10px;
+    color: var(--gba-text-black);
+    font-family: var(--font-gba);
+    text-align: center;
+}
+
+/* ===== CANDIDATE LIST ===== */
+.candidate-list {
+    display: none; /* Hide top candidates */
+    margin-top: var(--space-lg);
+    text-align: left;
+}
+
+.candidate-list h4 {
+    font-family: var(--font-gba);
+    font-size: 12px;
+    color: var(--gba-text-black);
+    margin-bottom: var(--space-md);
+}
+
+.candidate {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm);
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid var(--gba-dialog-border-dark);
+    margin-bottom: var(--space-xs);
+}
+
+.candidate-name {
+    font-family: var(--font-gba);
+    font-size: 10px;
+    color: var(--gba-text-black);
+}
+
+.candidate-confidence {
+    font-family: var(--font-gba);
+    font-size: 10px;
+    color: var(--gba-blue);
+    font-weight: bold;
+}
+
+/* ===== RESULTS SCREEN ===== */
+.results-content {
+    background: #ffffff;
+    border: 3px solid var(--gba-dialog-border-dark);
+    border-top-color: var(--gba-dialog-border-light);
+    border-left-color: var(--gba-dialog-border-light);
+    margin: var(--space-lg) auto;
+    padding: var(--space-lg);
+    text-align: center;
+    box-shadow: var(--gba-inset-light), var(--gba-inset-dark);
+    width: 600px;
+    max-width: 90vw;
+    height: 500px; /* Fixed height to prevent layout shifts */
+    overflow: hidden; /* Prevent any scrollbars */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.result-header h2 {
+    color: var(--gba-blue);
+    margin-bottom: var(--space-md);
+    font-size: 18px;
+    font-family: var(--font-gba);
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.pokemon-card {
+    background: linear-gradient(135deg, #fff 0%, #f0f4ff 100%);
+    border: 3px solid var(--gba-blue, #2563eb);
+    border-radius: 15px;
+    padding: 2rem;
+    margin: 2rem 0;
+    box-shadow: 0 8px 25px rgba(37, 99, 235, 0.2);
+}
+
+.pokemon-name {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--gba-blue, #2563eb);
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.confidence-display {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.confidence-display span:last-child {
+    font-weight: bold;
+    color: var(--gba-blue, #2563eb);
+}
+
+.result-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.result-button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.result-button.correct {
+    background: #10b981;
+    color: white;
+}
+
+.result-button.correct:hover {
+    background: #059669;
+    transform: translateY(-2px);
+}
+
+.result-button.wrong {
+    background: #ef4444;
+    color: white;
+}
+
+.result-button.wrong:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+}
+
+.primary-button {
+    background: linear-gradient(135deg, var(--gba-blue, #2563eb) 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 1rem;
+}
+
+.primary-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+}
+
+/* ===== GUESS ACTIONS BUTTONS ===== */
+.guess-actions {
+    display: flex !important;
+    gap: var(--space-md) !important;
+    justify-content: center !important;
+    margin-top: var(--space-xl) !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 100 !important;
+}
+
+.guess-actions button {
+    min-width: 120px !important;
+    padding: var(--space-md) var(--space-lg) !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.guess-actions button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
+}
+
+/* ===== GUESS SCREEN CONTAINER ===== */
+#guess-screen {
+    display: none;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+
+#guess-screen.active {
+    display: block;
+}
+
+.dialog-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+
+.dialog-box {
+    background: var(--gba-dialog-bg);
+    border: 3px solid var(--gba-dialog-border-dark);
+    border-top-color: var(--gba-dialog-border-light);
+    border-left-color: var(--gba-dialog-border-light);
+    border-radius: 8px;
+    padding: var(--space-xl);
+    box-shadow: var(--gba-inset-light), var(--gba-inset-dark);
+    text-align: center;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    max-height: 80vh;
+}
+
+.dialog-box h2 {
+    font-family: var(--font-gba);
+    font-size: 18px;
+    color: var(--gba-text-black);
+    margin-bottom: var(--space-lg);
+    text-shadow: 1px 1px 0px rgba(255,255,255,0.8);
+}
+
+.guess-actions {
+    display: flex;
+    gap: var(--space-md);
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: var(--space-xl);
+}
+
+/* ===== POKEBALL ANIMATION ===== */
+
+/* EMERGENCY FIX - Force visible text for all question text scenarios */
+h2.question-text, .question-text, #question-text, 
+h2#question-text, .question-container h2, .question-container .question-text {
+    color: #000000 !important;
+    background: #f8f8f0 !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    text-shadow: none !important;
+    -webkit-text-fill-color: #000000 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+    font-family: var(--font-gba), 'Courier New', monospace !important;
+    padding: 16px !important;
+    margin: 16px 0 !important;
+    text-align: center !important;
+    border: 2px solid var(--gba-dialog-border-dark) !important;
+    border-top-color: var(--gba-dialog-border-light) !important;
+    border-left-color: var(--gba-dialog-border-light) !important;
+    border-radius: 4px !important;
+    box-shadow: var(--gba-inset-light), var(--gba-inset-dark) !important;
+    line-height: 1.6 !important;
+}
+
+/* Force visibility for any possible text inside - more specific */
+h2.question-text *, .question-text *, #question-text *,
+h2#question-text *, .question-container h2 *, .question-container .question-text * {
+    color: #000000 !important;
+    text-shadow: none !important;
+    -webkit-text-fill-color: #000000 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* ===== POKEMON REVEAL ANIMATION (REMOVED FULL-SCREEN) ===== */
+
+/* ===== INLINE POKEMON REVEAL (CONTAINED WITHIN DIALOG) ===== */
+.pokemon-reveal-inline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-lg);
+    text-align: center;
+}
+
+.guess-pokemon-container {
+    margin: var(--space-xl) 0;
+    text-align: center;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#reveal-container {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    padding: var(--space-lg);
+    background: transparent; /* Remove background */
+    border: none; /* Remove border */
+    border-radius: 8px;
+    box-shadow: none; /* Remove box shadow */
+    width: 100%;
+    max-width: 300px;
+    min-height: 200px;
+    margin: 0 auto;
+    position: relative; /* IMPORTANT: relative, not fixed */
+    overflow: hidden;
+}
+
+.pokemon-reveal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-md);
+    width: 100%;
+    position: relative;
+    background: transparent; /* Remove any background */
+    border: none; /* Remove any border */
+    box-shadow: none; /* Remove any shadow */
+    padding: 0; /* Remove padding that might show background */
+}
+
+#revealed-pokemon {
+    width: 120px;
+    height: 120px;
+    image-rendering: pixelated;
+    transition: all 0.5s ease;
+    object-fit: contain;
+    max-width: 100%;
+    max-height: 120px;
+}
+
+#revealed-name {
+    font-family: var(--font-gba);
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--gba-text-black);
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    margin-top: var(--space-sm);
+    word-wrap: break-word;
+    max-width: 100%;
+}
+
+/* ===== FORCE REMOVE ALL REVEAL BORDERS ===== */
+#reveal-container, #reveal-container *, 
+.pokemon-reveal, .pokemon-reveal *,
+.revealed, .revealed * {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    outline: none !important;
+}
+
+#revealed-pokemon {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    outline: none !important;
+}
+
+#revealed-name {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    outline: none !important;
+}
+
+/* ===== FORCE HIDE SHARE BUTTONS ===== */
+#share-result, 
+button[id*="share"], 
+button[class*="share"],
+.share-button,
+*[innerHTML*="Share Result"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Keyboard navigation hint */
+.keyboard-hint {
+    margin-top: var(--space-md);
+    text-align: center;
+}
+
+.keyboard-hint p {
+    font-family: var(--font-gba);
+    font-size: 8px;
+    color: #666;
+    margin: 0;
+    opacity: 0.8;
+}
+
+@keyframes pulse-arrow {
+    0%, 100% { 
+        opacity: 1; 
+        transform: translateY(-50%) translateX(0px);
+    }
+    50% { 
+        opacity: 0.6; 
+        transform: translateY(-50%) translateX(3px);
+    }
+}
+
+/* ===== CLASSIC POKEMON REVEAL ANIMATION ===== */
+.pokemon-reveal-container {
+    height: 280px; /* Fixed height to prevent layout shifts */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    position: relative;
+    flex: 1; /* Take available space */
+}
+
+.pokemon-silhouette-stage,
+.pokemon-reveal-stage {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute; /* Overlay stages to prevent height changes */
+    top: 0;
+    left: 0;
+}
+
+.pokemon-sprite-container {
+    width: 180px;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: var(--space-sm) auto;
+    background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+    border: 2px solid var(--gba-dialog-border-dark);
+    border-radius: 8px;
+    box-shadow: inset 1px 1px 0px #ffffff, inset -1px -1px 0px #c0c0c0;
+}
+
+.pokemon-sprite {
+    max-width: 160px;
+    max-height: 160px;
+    width: auto;
+    height: auto;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    object-fit: contain;
+}
+
+/* Silhouette effect */
+.pokemon-sprite.silhouette {
+    filter: brightness(0) contrast(100%);
+    animation: silhouette-suspense 1.2s ease-in-out infinite;
+}
+
+@keyframes silhouette-suspense {
+    0%, 100% { 
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% { 
+        opacity: 0.8;
+        transform: scale(1.02);
+    }
+}
+
+/* Reveal animation */
+.pokemon-sprite.revealed {
+    animation: pokemon-reveal 1s ease-out forwards;
+    filter: none;
+}
+
+@keyframes pokemon-reveal {
+    0% {
+        filter: brightness(0) contrast(100%);
+        transform: scale(1.03);
+        opacity: 1;
+    }
+    30% {
+        filter: brightness(0) contrast(100%);
+        transform: scale(1.01);
+        opacity: 1;
+    }
+    60% {
+        filter: brightness(8) contrast(200%) saturate(0);
+        transform: scale(1);
+    }
+    100% {
+        filter: brightness(1) contrast(100%) saturate(1);
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Flash effect during reveal */
+.flash-effect {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 70%);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 5;
+    border-radius: 10px;
+}
+
+.flash-effect.active {
+    animation: flash-reveal 0.6s ease-out;
+}
+
+@keyframes flash-reveal {
+    0% { 
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    50% { 
+        opacity: 1;
+        transform: scale(1.1);
+    }
+    100% { 
+        opacity: 0;
+        transform: scale(1.5);
+    }
+}
+
+/* Pokemon info styling */
+.pokemon-info {
+    text-align: center;
+    margin-top: var(--space-sm);
+    animation: info-slide-up 0.5s ease-out 0.6s both;
+}
+
+@keyframes info-slide-up {
+    0% {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.pokemon-info .pokemon-name {
+    font-family: var(--font-gba);
+    font-size: 18px;
+    color: var(--gba-text-black);
+    font-weight: bold;
+    margin-bottom: var(--space-xs);
+    text-transform: capitalize;
+    text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
+}
+
+.pokemon-info .confidence-display {
+    font-family: var(--font-gba);
+    font-size: 11px;
+    color: var(--gba-blue);
+    font-weight: bold;
+}
+
+/* Result actions slide in - even faster */
+.result-actions {
+    animation: actions-slide-in 0.5s ease-out 1.1s both;
+    margin-top: var(--space-sm);
+    flex-shrink: 0; /* Prevent shrinking */
+    height: 120px; /* Fixed height for button area */
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    align-items: center;
+    justify-content: flex-start;
+}
+
+@keyframes actions-slide-in {
+    0% {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

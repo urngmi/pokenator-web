@@ -1,0 +1,71 @@
+/* Pokémon Fire Red Kanto Map Vertical Slideshow Background */
+
+.map-slideshow-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.map-slideshow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-image: url('./full_kanto_map.png');
+    background-repeat: repeat-y;
+    background-size: 100% auto;
+    background-position: center top;
+    animation: scrollVertical 90s infinite linear;
+}
+
+@keyframes scrollVertical {
+    0% {
+        background-position: center 0%;
+    }
+    100% {
+        background-position: center 100%;
+    }
+}
+
+/* Alternative smoother animation - uncomment to use */
+/*
+@keyframes scrollVertical {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-50vh);
+    }
+}
+*/
+
+/* Overlay for better text readability */
+.map-slideshow-background::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(232, 240, 232, 0.3); /* Much lower opacity for better map visibility */
+    pointer-events: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .map-slideshow {
+        background-size: cover;
+        animation-duration: 70s; /* Slower on mobile */
+    }
+}
+
+@media (max-width: 480px) {
+    .map-slideshow {
+        animation-duration: 50s; /* Still slower on small screens */
+    }
+}
