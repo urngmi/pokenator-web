@@ -103,6 +103,12 @@ class SimplePokenatorGame {
         this.selectedAnswerIndex = 0;
         this.answerButtons = [];
         
+        // Preload Professor Oak sprites immediately
+        this.preloadProfessorOakSprites();
+        
+        // Initialize Professor Oak immediately (no delay)
+        this.initializeProfessorOak();
+        
         // Disable start button initially
         if (this.elements.startButton) {
             this.elements.startButton.disabled = true;
@@ -129,12 +135,28 @@ class SimplePokenatorGame {
         
         const correctBtn = document.getElementById('correct-guess');
         if (correctBtn) {
-            correctBtn.addEventListener('click', () => this.showScreen('welcome'));
+            correctBtn.addEventListener('click', () => {
+                // Show Professor Oak celebrating the correct guess
+                try {
+                    this.showProfessorOak('confident');
+                    setTimeout(() => this.showScreen('welcome'), 300);
+                } catch (error) {
+                    this.showScreen('welcome'); // Fallback if Oak fails
+                }
+            });
         }
         
         const wrongBtn = document.getElementById('wrong-guess');
         if (wrongBtn) {
-            wrongBtn.addEventListener('click', () => this.showScreen('welcome'));
+            wrongBtn.addEventListener('click', () => {
+                // Show Professor Oak's surprised reaction to wrong guess
+                try {
+                    this.showProfessorOak('surprised');
+                    setTimeout(() => this.showScreen('welcome'), 300);
+                } catch (error) {
+                    this.showScreen('welcome'); // Fallback if Oak fails
+                }
+            });
         }
     }
     
@@ -143,6 +165,8 @@ class SimplePokenatorGame {
             this.elements.startButton.disabled = false;
             this.elements.startButton.querySelector('span').textContent = 'Start Game';
         }
+        
+        // Oak is already initialized at startup, no need to do it again
     }
     
     startGame() {
@@ -733,6 +757,19 @@ class SimplePokenatorGame {
             confidenceEl.textContent = `${(confidence * 100).toFixed(1)}%`;
         }
         
+        // Show Professor Oak making his confident guess
+        try {
+            if (confidence > 0.8) {
+                this.showProfessorOak('confident');
+            } else if (confidence > 0.5) {
+                this.showProfessorOak('thinking');
+            } else {
+                this.showProfessorOak('confused');
+            }
+        } catch (error) {
+            console.log('Professor Oak guess expression error (non-critical):', error);
+        }
+        
         // Show the results screen
         this.showScreen('results');
         
@@ -857,6 +894,25 @@ class SimplePokenatorGame {
         
         if (this.screens[screenName]) {
             this.screens[screenName].style.display = 'block';
+        }
+        
+        // ===== PROFESSOR OAK INTEGRATION (SAFE & NON-INTRUSIVE) =====
+        // Update Professor Oak expression based on screen
+        try {
+            if (screenName === 'welcome') {
+                // Show Professor Oak on welcome screen with neutral confident expression
+                this.showProfessorOak('confident');
+            } else if (screenName === 'question') {
+                // Show Oak with varied expressions during questions - not decisive ones
+                setTimeout(() => this.updateQuestionOakExpression(), 100);
+            } else if (screenName === 'thinking') {
+                this.showProfessorOak('thinking');
+            } else if (screenName === 'results') {
+                // Decisive expressions only at the end - will be updated in result handlers
+            }
+        } catch (error) {
+            // Silent fail - Professor Oak is optional enhancement
+            console.log('Professor Oak integration error (non-critical):', error);
         }
     }
     
@@ -1132,6 +1188,103 @@ class SimplePokenatorGame {
         
         // Update visual selection
         this.updateSelectedAnswer();
+    }
+    
+    // ===== PROFESSOR OAK ASSISTANT FUNCTIONS =====
+    // These are completely separate and won't interfere with existing game logic
+    
+    showProfessorOak(expression = 'thinking') {
+        try {
+            const oakContainer = document.getElementById('professor-oak');
+            const oakSprite = document.getElementById('oak-sprite');
+            
+            if (!oakContainer || !oakSprite) return; // Safe fallback if elements don't exist
+            
+            // Map expressions to sprite files
+            const expressions = {
+                'thinking': 'thinking-expression-oak-no-bg.png',
+                'confident': 'confident-expression-oak-no-bg.png',
+                'confused': 'confused-expression-oak-no-bg.png',
+                'surprised': 'suprised-expression-oak.png',
+                'failed': 'failed-expression-oak.png'
+            };
+            
+            const spriteFile = expressions[expression] || expressions['thinking'];
+            oakSprite.src = `assets/${spriteFile}`;
+            
+            // Show Oak immediately - no animation
+            oakContainer.style.display = 'block';
+            
+            // Instant expression changes - no animation
+        } catch (error) {
+            console.log('Professor Oak display error (non-critical):', error);
+        }
+    }
+    
+    hideProfessorOak() {
+        try {
+            const oakContainer = document.getElementById('professor-oak');
+            if (oakContainer) {
+                oakContainer.style.display = 'none';
+                oakContainer.classList.remove('oak-enter');
+            }
+        } catch (error) {
+            console.log('Professor Oak hide error (non-critical):', error);
+        }
+    }
+    
+    // Update Professor Oak with non-decisive expressions during questions
+    updateQuestionOakExpression() {
+        if (!this.gameActive) return;
+        
+        try {
+            // Cycle through non-decisive expressions during questions
+            const questionNumber = this.questionsAsked || 1;
+            
+            // Use different expressions based on question progression, but not decisive ones
+            if (questionNumber <= 3) {
+                this.showProfessorOak('confident'); // Early questions - confident
+            } else if (questionNumber <= 8) {
+                this.showProfessorOak('thinking'); // Middle questions - thinking
+            } else if (questionNumber <= 15) {
+                // Alternate between thinking and confused for later questions
+                const expression = (questionNumber % 2 === 0) ? 'thinking' : 'confused';
+                this.showProfessorOak(expression);
+            } else {
+                this.showProfessorOak('confused'); // Very late questions - getting confused
+            }
+        } catch (error) {
+            console.log('Professor Oak question expression error (non-critical):', error);
+        }
+    }
+    
+    // Show Professor Oak immediately on page load
+    preloadProfessorOakSprites() {
+        // Preload all Professor Oak sprites to prevent loading delays
+        const sprites = [
+            'thinking-expression-oak-no-bg.png',
+            'confident-expression-oak-no-bg.png',
+            'confused-expression-oak-no-bg.png',
+            'suprised-expression-oak.png',
+            'failed-expression-oak.png'
+        ];
+        
+        sprites.forEach(spriteFile => {
+            const img = new Image();
+            img.src = `assets/${spriteFile}`;
+            // Store reference to prevent garbage collection
+            if (!this.preloadedSprites) this.preloadedSprites = [];
+            this.preloadedSprites.push(img);
+        });
+    }
+    
+    initializeProfessorOak() {
+        try {
+            // Show Oak immediately with no delay
+            this.showProfessorOak('confident');
+        } catch (error) {
+            console.log('Professor Oak initialization error (non-critical):', error);
+        }
     }
 }
 

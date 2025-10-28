@@ -7,8 +7,8 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Pokénator - The Pokémon Mind Reader</title>
-    <link rel="stylesheet" href="styles.css?v=2.0">
-    <link rel="stylesheet" href="assets/maps/map-slideshow.css">
+    <link rel="stylesheet" href="styles.css?v=9.1&t=oak-moved-left">
+    <link rel="stylesheet" href="assets/maps/map-slideshow.css?v=3.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@400;700;900&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
@@ -27,6 +27,11 @@
         <div class="particle" style="--delay: 3s; --duration: 9s;"></div>
         <div class="particle" style="--delay: 4s; --duration: 5s;"></div>
     </div>
+    <!-- Professor Oak Assistant (Non-intrusive overlay) -->
+    <div id="professor-oak" class="professor-oak-container" style="display: none;">
+        <img id="oak-sprite" src="" alt="Professor Oak" class="oak-sprite">
+    </div>
+
     <div class="game-container">
         <header class="game-header">
             <div class="logo-container">
@@ -200,7 +205,7 @@
         
         // Load script with timestamp to prevent caching
         const script = document.createElement('script');
-        script.src = 'js/enhanced-game-v4.js?v=3.0&t=' + Date.now();
+        script.src = 'js/enhanced-game-v4.js?v=3.2&t=' + Date.now();
         document.head.appendChild(script);
     </script>
 </body>

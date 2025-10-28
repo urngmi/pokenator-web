@@ -554,9 +554,11 @@ body {
     border: 2px solid var(--gba-dialog-border-dark);
     border-top-color: var(--gba-dialog-border-light);
     border-left-color: var(--gba-dialog-border-light);
-    margin: var(--space-lg);
+    margin: var(--space-lg) auto; /* Center horizontally like question content */
     padding: var(--space-xl);
     box-shadow: var(--gba-inset-light), var(--gba-inset-dark);
+    width: 700px; /* Match question-content width */
+    max-width: 90vw; /* Match question-content responsive width */
 }
 
 .thinking-animation {
@@ -1222,5 +1224,48 @@ button[class*="share"],
     100% {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* ===== PROFESSOR OAK ASSISTANT ===== */
+.professor-oak-container {
+    position: fixed;
+    left: 280px; /* Moved further to the left */
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    pointer-events: none; /* Don't interfere with game interactions */
+    /* No transition - immediate appearance */
+}
+
+.oak-sprite {
+    width: 400px; /* WAY BIGGER - massive like Akinator's genie */
+    height: auto;
+    image-rendering: pixelated; /* Maintain pixel art quality */
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
+/* No expression change animation - instant changes only */
+
+/* Responsive adjustments for Professor Oak */
+@media (max-width: 1200px) {
+    .professor-oak-container {
+        left: 240px; /* Proportionally adjusted for new position */
+        transform: translateY(-50%) scale(0.85);
+    }
+}
+
+@media (max-width: 768px) {
+    .professor-oak-container {
+        left: 160px; /* Adjusted for tablets */
+        transform: translateY(-50%) scale(0.65); /* Smaller but still very prominent */
+    }
+}
+
+@media (max-width: 480px) {
+    .professor-oak-container {
+        left: 40px; /* Adjusted for phones */
+        transform: translateY(-50%) scale(0.45); /* Smaller on phones but still big */
     }
 }
